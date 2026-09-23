@@ -44,6 +44,14 @@ app.post("/api/todos", async (c) => {
   return c.json({ newTodo });
 });
 
+app.patch("/api/todos/:id", async (c) => {
+  const id = await c.req.param("id");
+  const { completed } = await c.req.json();
+  const sql = `UPDATE todos SET completed = ${completed} WHERE id = ${id}`;
+  db.exec(sql);
+  return c.json({ id: id, message: "Updated successfully" });
+});
+
 serve(
   {
     fetch: app.fetch,
