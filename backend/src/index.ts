@@ -33,15 +33,12 @@ app.get("/api/todos", (c) => {
 app.post("/api/todos", async (c) => {
   const { title } = await c.req.json();
 
-  const sql = `INSERT INTO todos (title) VALUES ('${title}')`;
-  db.exec(sql);
-
-  const info = db.prepare(sql).run();
+  const info = db.prepare("INSERT INTO todos (title) VALUES (?)").run(title);
   const newTodo = db
     .prepare("SELECT * FROM todos WHERE id = ?")
     .get(info.lastInsertRowid);
 
-  return c.json({ newTodo });
+  return c.json(newTodo);
 });
 
 app.patch("/api/todos/:id", async (c) => {
