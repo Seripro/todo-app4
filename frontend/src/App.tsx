@@ -53,19 +53,19 @@ function App() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    const rawRes = await fetch(`${BASE_URL}/${id}`, {
-      method: "DELETE",
-    });
-    const res = await rawRes.json();
-    if (res.error) {
-      setError(res.error);
-      return;
-    } else {
-      const newTodos = todos.filter((todo) => todo.id !== id);
-      setTodos(newTodos);
-    }
-  };
+  // const handleDelete = async (id: string) => {
+  //   const rawRes = await fetch(`${BASE_URL}/${id}`, {
+  //     method: "DELETE",
+  //   });
+  //   const res = await rawRes.json();
+  //   if (res.error) {
+  //     setError(res.error);
+  //     return;
+  //   } else {
+  //     const newTodos = todos.filter((todo) => todo.id !== id);
+  //     setTodos(newTodos);
+  //   }
+  // };
 
   const handleToggle = async (id: string, completed: number) => {
     const rawRes = await fetch(`${BASE_URL}/${id}`, {
@@ -111,7 +111,7 @@ function App() {
                 checked={numberToBoolean(todo.completed)}
                 onChange={() => handleToggle(todo.id, todo.completed)}
               />
-              <button onClick={() => handleDelete(todo.id)}>削除</button>
+              {/* <button onClick={() => handleDelete(todo.id)}>削除</button> */}
             </div>
           );
         })}

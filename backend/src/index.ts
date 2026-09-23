@@ -52,13 +52,6 @@ app.patch("/api/todos/:id", async (c) => {
   return c.json({ id: id, message: "Updated successfully" });
 });
 
-app.delete("/api/todos/:id", async (c) => {
-  const id = await c.req.param("id");
-  const sql = `DELETE FROM todos WHERE id = ${id}`;
-  db.exec(sql);
-  return c.json({ id: id, message: "Delete successfully" });
-});
-
 serve(
   {
     fetch: app.fetch,
