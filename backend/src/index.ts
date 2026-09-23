@@ -33,10 +33,12 @@ app.get("/api/todos", (c) => {
 app.post("/api/todos", async (c) => {
   const { title } = await c.req.json();
 
-  const info = db.prepare("INSERT INTO todos (title) VALUES (?)").run(title);
+  const sql = `INSERT INTO todos (title) VALUES ('${title}')`;
+  db.exec(sql);
+
   const newTodo = db
-    .prepare("SELECT * FROM todos WHERE id = ?")
-    .get(info.lastInsertRowid);
+    .prepare("SELECT * FROM todos ORDER BY id DESC LIMIT 1")
+    .get();
 
   return c.json(newTodo);
 });
