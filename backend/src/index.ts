@@ -1,15 +1,41 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import Database from "better-sqlite3";
+import { cors } from "hono/cors";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.use(
+  "/*",
+  cors({
+    origin: "http://localhost:5173",
+    allowMethods: ["GET", "POST", "DELETE", "OPTIONS", "PATCH"],
+    allowHeaders: ["Content-Type"],
+  }),
+);
 
-serve({
-  fetch: app.fetch,
-  port: 3000
-}, (info) => {
-  console.log(`Server is running on http://localhost:${info.port}`)
-})
+const db = new Database("todo.db");
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS todos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    completed INTEGER DEFAULT 0,
+    createdAt TEXT DEFAULT (datetime('now', 'localtime'))
+  )
+`);
+
+app.get("/api/todos", (c) => {
+  const todos = db.prepare("SELECT * FROM todos").all();
+  return c.json(todos);
+});
+
+serve(
+  {
+    fetch: app.fetch,
+    port: 3000,
+  },
+  (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`);
+  },
+);
